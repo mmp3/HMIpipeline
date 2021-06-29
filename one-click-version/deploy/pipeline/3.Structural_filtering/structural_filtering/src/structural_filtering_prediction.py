@@ -23,6 +23,12 @@ def parse_args(argv):
                         action="store",
                         required=True)
 
+    parser.add_argument("--proteins" ,
+                        help="<path to DIRECTORY with one protein per file, named '<uniprotkb_id>.fasta'> [mandatory]",
+                        dest="faadir" ,
+                        action="store",
+                        required=True)
+
     parser.add_argument("--results",
                         help="<path to results> [mandatory]",
                         dest="results",
@@ -87,10 +93,11 @@ def download_fasta(protein_list, folder):
             output_file.write("\n".join(result))
 
 
-def run_iupred(folder, method_type='short', anchor=True):
+def run_iupred(folder, proteins , method_type='short', anchor=True):
     """ IUPred modelling with an optional usage of ANCHOR2 """
     motif_score = {}
-    sequence_folder = "{}/protein_sequences".format(folder)
+    sequence_folder = proteins
+    #sequence_folder = "{}/protein_sequences".format(folder)
     iupred_data_folder = "{}/iupred_data".format(folder)
     for sequence in os.listdir(sequence_folder):
         protein_name = str(sequence).split(".")[0]
@@ -164,11 +171,11 @@ def main(argv):
     # Get interacting motif information
     motif_dict = get_motif(args.hmi_prediction)
 
-    # Download fasta files - 1 protein/file
-    download_fasta(human_proteins, args.resources)
+#    # Download fasta files - 1 protein/file
+#    download_fasta(human_proteins, args.resources)
 
     # Assign IUPred and ANCHOR scores to AAs
-    scores = run_iupred(args.resources, 'short')
+    scores = run_iupred(args.resources, args.faadir , 'short')
 
     # Select disordered motifs
     idr_motifs = motif_selection(scores, motif_dict)
