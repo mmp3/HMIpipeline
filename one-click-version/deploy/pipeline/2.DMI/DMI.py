@@ -1,5 +1,6 @@
 import argparse
 import re
+import os
 
 from pyfasta import Fasta
 
@@ -18,7 +19,10 @@ def dmi(bacterial_input, bacterial_id_col, bacterial_pf_col, human_receptors_DMI
     human = Fasta(human_receptors_DMI)  #'human_receptors.fasta')
 
     #elm identifier(key) - regex(value) dictionary
-    with open("elm_motif.tsv", "r") as motif_table:
+    with open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         'elm_motif.tsv'),'r') as motif_table:
+    #with open("elm_motif.tsv", "r") as motif_table:
         motif_table.readline()
         elm_regex = {}
         for line in motif_table:
@@ -26,7 +30,10 @@ def dmi(bacterial_input, bacterial_id_col, bacterial_pf_col, human_receptors_DMI
             elm_regex[line[1]] = line[4]
 
     #motif(key) - domain(value list) dictionary
-    with open("elm_interaction_domains.tsv", "r") as motif_domain_table:
+    with open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         'elm_interaction_domains.tsv'),'r') as motif_domain_table:
+    #with open("elm_interaction_domains.tsv", "r") as motif_domain_table:
         motif_domain_table.readline()
         motif_domain = {}
         for line in motif_domain_table:
